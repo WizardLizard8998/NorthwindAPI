@@ -5,14 +5,10 @@ namespace NorthwindAPI.Models
 {
     public class Employees
     {
-        [Key]
+     
         
-        public int  EmployeeID { get; set; }
-        
-        
+        public int  EmployeeID { get; set; } 
         public string FirstName { get; set; }
-
-        
         public string LastName{ get; set; }
         public string Title{ get; set; }
         public string TitleOfCourtesy{ get; set; }
@@ -25,8 +21,8 @@ namespace NorthwindAPI.Models
         public string Country{ get; set; }
         public string HomePhone{ get; set; }
         public string Extension{ get; set; }
-        public string Photo {get; set; }
-        public string Notes {get; set; }
+    
+       
         public int ReportsTo{get; set; }
         public string PhotoPath{get; set; }
     }
