@@ -35,6 +35,7 @@ namespace NorthwindAPI
             string conStr = this.Configuration.GetConnectionString("conStr");
 
            
+
            // services.AddControllers();
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>

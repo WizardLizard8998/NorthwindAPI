@@ -120,7 +120,149 @@ namespace NorthwindAPI.Controllers
 
 
 
+
+        // put yazımında tek istek üzerinden gelen veriyi değiştirmek için araştırma yap 
         
+
+        [HttpPut]
+        [Route("api/PutEmployee")]
+        public IActionResult PutEmployee([FromBody] Employees employees)
+        {
+
+            string sqlcmd = "select COUNT(*) from Employees where EmployeeID = @ID";
+
+            DataTable dt = new DataTable();
+
+            // will be continue 
+
+            string sqlcmdupdate = "update Employees " +
+                                 "set " +
+                                 " FirstName = @fname , LastName = @lname , Title =@title , TitleOfCourtesy =@toc , BirthDate =@birthdate , " +
+                                 " HireDate =@hiredate  " +
+                                 " where EmployeeID = @Id";  
+
+            using (SqlConnection con = new SqlConnection(connectionString: Configuration.GetConnectionString("conStr")))
+            {
+                try
+                {
+                    con.Open();
+
+
+                    SqlCommand cmd = new SqlCommand(sqlcmd, con);
+
+                    SqlCommand cmd2 = new SqlCommand(sqlcmdupdate, con);
+
+                    cmd.Parameters.AddWithValue("@ID", employees.EmployeeID);
+
+                    var result  =  cmd.ExecuteScalar();
+
+
+                    if(Convert.ToInt32(result) == 0)
+                    {
+                        throw new Exception("what da hell ?"); 
+                    }
+
+                    cmd2.Parameters.AddWithValue("@Id", employees.EmployeeID);                    
+                    cmd2.Parameters.AddWithValue("@fname", employees.FirstName);
+                    cmd2.Parameters.AddWithValue("@lname", employees.LastName);
+                    cmd2.Parameters.AddWithValue("@title", employees.Title);
+                    cmd2.Parameters.AddWithValue("@toc", employees.TitleOfCourtesy);
+                    cmd2.Parameters.AddWithValue("@birthdate", employees.BirthDate);
+                    cmd2.Parameters.AddWithValue("@hiredate", employees.HireDate);
+
+                    cmd2.ExecuteNonQuery();
+
+
+
+
+
+                }
+                catch(Exception ex )
+                {
+                    return BadRequest(ex);
+                }
+                finally
+                {
+                    con.Close(); 
+                }
+            
+                
+             
+                
+             }
+
+                return Ok();
+
+        }
+
+
+        
+
+
+        [HttpDelete]
+        [Route("api/DeleteEmployee/{ID}")]
+        public IActionResult DeleteEmployee(int ID)
+        {
+
+            string sqlcmd = "delete from Employees where EmployeeId = @Id";
+
+            string sqlcmd2 = "select COUNT(*) from Employees where EmployeeId = @Id";
+
+            using(SqlConnection con = new SqlConnection(connectionString: Configuration.GetConnectionString("conStr")))
+            {
+
+
+                try
+                {
+                    con.Open();
+
+                   SqlCommand cmd  =new SqlCommand (sqlcmd, con);
+
+                    SqlCommand cmd2 = new SqlCommand (sqlcmd2, con);
+
+                    cmd.Parameters.AddWithValue("@Id", ID);
+
+                    cmd2.Parameters.AddWithValue("@Id", ID); 
+
+                    
+                    var result = cmd2.ExecuteScalar();
+
+                    if(Convert.ToInt64(result) != 1)
+                    {
+                        throw new Exception("there is something unexpected occur ");
+                    }
+
+                    //Console.WriteLine(result);
+
+
+
+
+                    cmd.ExecuteScalar();
+
+
+
+
+                }catch(Exception ex)
+                {
+                    return BadRequest(ex);
+                }
+                finally
+                {
+                    con.Close(); 
+                }
+
+
+                return Ok("delete complette");
+
+            }
+
+
+
+
+        }
+
+
+
 
     }
 }
